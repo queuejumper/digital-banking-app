@@ -1,0 +1,52 @@
+import { FormEvent, useState } from "react";
+import { useAuth } from "../auth/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import Alert from "../components/Alert";
+
+export default function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (err: any) {
+      setError(err?.response?.data?.error?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="max-w-sm mx-auto mt-14">
+      {error && <div className="mb-3"><Alert title="Login failed" onClose={() => setError(null)}>{error}</Alert></div>}
+      <h1 className="text-2xl font-semibold">Login</h1>
+      <form onSubmit={onSubmit} className="mt-4 space-y-3">
+        <div>
+          <label className="block text-sm text-gray-700">Email</label>
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label className="block text-sm text-gray-700">Password</label>
+          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <button type="submit" disabled={loading} className="w-full rounded-md bg-blue-600 text-white py-2 hover:bg-blue-700 disabled:opacity-70">
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+      <p className="mt-3 text-sm text-gray-600">
+        No account? <Link to="/signup" className="text-blue-600 hover:underline">Sign up</Link>
+      </p>
+    </div>
+  );
+}
+
+
