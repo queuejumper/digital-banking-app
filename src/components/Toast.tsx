@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export type ToastKind = "success" | "warning" | "error" | "info";
 
-export function Toast({ message, kind = "info", onClose }: { message: string; kind?: ToastKind; onClose?: () => void }) {
+export function Toast({ message, kind = "info" }: { message: string; kind?: ToastKind; onClose?: () => void }) {
   const color = kind === "success" ? "bg-emerald-600" : kind === "warning" ? "bg-amber-500" : kind === "error" ? "bg-red-600" : "bg-slate-800";
   return (
     <div className={`text-white ${color} rounded-md shadow px-3 py-2 text-sm`}>{message}</div>

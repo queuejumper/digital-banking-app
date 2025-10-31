@@ -1,18 +1,16 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { api, listUsers } from "../api/client";
-import type { Account, KycStatus, User } from "../types";
+import { listUsers } from "../api/client";
+import type { User } from "../types";
 import Alert from "../components/Alert";
 import { Link, NavLink } from "react-router-dom";
 
 export default function Admin() {
-  const [userId, setUserId] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [userSearch, setUserSearch] = useState("");
   const [usersPage, setUsersPage] = useState(1);
   const [usersTotal, setUsersTotal] = useState(0);
   const [usersPageSize, setUsersPageSize] = useState(10);
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
@@ -26,16 +24,6 @@ export default function Admin() {
       setUsersTotal(usersData.total);
       setUsersPage(usersData.page);
       setUsersPageSize(usersData.pageSize);
-      // Auto-select first user and load their accounts
-      if (usersData.items.length > 0) {
-        const first = usersData.items[0]
-        setUserId(first.id)
-        const { data } = await api.get<{ accounts: Account[] }>("/accounts", { params: { userId: first.id } })
-        setAccounts(data.accounts)
-      } else {
-        setUserId("")
-        setAccounts([])
-      }
     } catch (err: any) {
       setError(err?.response?.data?.error?.message || "Failed to search");
     } finally {

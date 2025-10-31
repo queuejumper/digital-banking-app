@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, deposit as depositApi, withdraw as withdrawApi, listTransactions, convert as convertApi, closeAccount as closeAccountApi } from "../api/client";
 import type { Account, Transaction } from "../types";
@@ -13,7 +14,7 @@ export default function AccountDetail() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [closing, setClosing] = useState(false);
+  const [closing] = useState(false);
   const [depositAmount, setDepositAmount] = useState<number>(0);
   const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
   const [confirmAction, setConfirmAction] = useState<

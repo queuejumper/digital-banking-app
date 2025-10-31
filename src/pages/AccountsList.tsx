@@ -1,12 +1,11 @@
-import { FormEvent, useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import type { Account } from "../types";
-import { useAuth } from "../auth/AuthContext";
 import Alert from "../components/Alert";
 
 export default function AccountsList() {
-  const { user } = useAuth();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [currency, setCurrency] = useState("USD");
   const [loading, setLoading] = useState(false);
