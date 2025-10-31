@@ -47,7 +47,7 @@ export default function AdminReconcile() {
                 const now = new Date().toISOString();
                 setLastCheck(now); localStorage.setItem('reconcile:lastCheck', now);
                 const n = data.mismatches?.length || 0;
-                setToasts(t => [{ id: Date.now(), message: `Reconciliation completed: ${n} mismatches`, kind: n === 0 ? 'success' : 'warning' }, ...t].slice(0,3))
+                setToasts(t => [{ id: Date.now(), message: `Reconciliation completed: ${n} mismatches`, kind: (n === 0 ? 'success' : 'warning') as 'success' | 'warning' }, ...t].slice(0,3))
               } finally { setLoading(false); }
             }}
             className="rounded-md bg-emerald-600 text-white px-4 py-2 hover:bg-emerald-700 disabled:opacity-70"

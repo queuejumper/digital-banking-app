@@ -1,11 +1,12 @@
-import { FormEvent, useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import type { User } from "../types";
 import Alert from "../components/Alert";
 
 export default function KycPage() {
-  const { user: currentUser, setAuth } = useAuth();
+  const { user: currentUser } = useAuth();
   const [user, setUser] = useState<User | null>(currentUser);
   const [fullName, setFullName] = useState("");
   const [country, setCountry] = useState("");

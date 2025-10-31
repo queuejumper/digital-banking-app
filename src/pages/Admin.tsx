@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { api, listUsers } from "../api/client";
 import type { Account, KycStatus, User } from "../types";
 import Alert from "../components/Alert";
@@ -62,20 +63,6 @@ export default function Admin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSearch])
 
-  async function onUpdateKyc(e: FormEvent) {
-    e.preventDefault();
-    if (!userId) return;
-    setError(null);
-    setLoading(true);
-    try {
-      const { data } = await api.patch<{ user: User }>(`/kyc/admin/${userId}/status`, { status: kycStatus });
-      setKycUser(data.user);
-    } catch (err: any) {
-      setError(err?.response?.data?.error?.message || "Failed to update KYC");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <div>

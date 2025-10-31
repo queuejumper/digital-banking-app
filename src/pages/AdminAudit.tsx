@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { listAudit } from "../api/client";
 import type { AuditLog } from "../types";
@@ -18,7 +18,6 @@ export default function AdminAudit() {
   const [from, setFrom] = useState(searchParams.get('from') || "");
   const [to, setTo] = useState(searchParams.get('to') || "");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   function syncQuery(p = page) {
     const next = new URLSearchParams();
@@ -32,14 +31,14 @@ export default function AdminAudit() {
   }
 
   async function load(p = page) {
-    setLoading(true); setError(null);
+    setError(null);
     try {
       const data = await listAudit({ actorId: actorId || undefined, action: action || undefined, from: from || undefined, to: to || undefined, page: p, pageSize });
       setItems(data.items); setTotal(data.total); setPage(data.page); setPageSize(data.pageSize);
       syncQuery(data.page);
     } catch (err: any) {
       setError(err?.response?.data?.error?.message || 'Failed to load audit');
-    } finally { setLoading(false); }
+    }
   }
 
   useEffect(() => { load(1) }, []);
