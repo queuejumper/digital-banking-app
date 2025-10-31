@@ -3,6 +3,26 @@ import { useAuth } from "../auth/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
 
+function formatError(err: any): string {
+  const error = err?.response?.data?.error;
+  if (!error) return "Login failed";
+  
+  // Handle validation errors array
+  if (Array.isArray(error.message)) {
+    const messages = error.message.map((m: any) => {
+      if (typeof m === 'string') return m;
+      if (m.message) {
+        const field = m.path?.[0] || 'field';
+        return `${field}: ${m.message}`;
+      }
+      return JSON.stringify(m);
+    });
+    return messages.join(', ');
+  }
+  
+  return error.message || "Login failed";
+}
+
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -14,12 +34,19 @@ export default function Login() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    
+    // Client-side validation
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+    
     setLoading(true);
     try {
       await login(email, password);
       navigate("/");
     } catch (err: any) {
-      setError(err?.response?.data?.error?.message || "Login failed");
+      setError(formatError(err));
     } finally {
       setLoading(false);
     }
@@ -36,7 +63,17 @@ export default function Login() {
         </div>
         <div>
           <label className="block text-sm text-gray-700">Password</label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            type="password" 
+            required 
+            minLength={8}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          />
+          {password.length > 0 && password.length < 8 && (
+            <p className="mt-1 text-xs text-red-600">Password must be at least 8 characters</p>
+          )}
         </div>
         <button type="submit" disabled={loading} className="w-full rounded-md bg-blue-600 text-white py-2 hover:bg-blue-700 disabled:opacity-70">
           {loading ? "Logging in..." : "Login"}
